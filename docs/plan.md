@@ -121,29 +121,76 @@ Two log streams are needed for all debugging:
 #   chosen->log <phys addr>  (read from device tree dump)
 ```
 
-### 0.7 Prove m1n1 hypervisor works on M1
+### 0.7 Install m1n1 on M1 and prove hypervisor works
 
-**This is the critical gating step. Before any M5 work, prove the hypervisor
-can boot macOS on M1.**
+**This is the critical gating step. Before any M5 work, install m1n1 on M1
+and prove the hypervisor can boot macOS.**
+
+**Step A: Transfer m1n1.bin to M1**
+
+On M5:
+```sh
+cd /Users/gabesmall/workspace/asahi-m5-project/m1n1/build
+python3 -m http.server 8000
+```
+
+On M1 (normal macOS Terminal):
+```sh
+curl -O http://M5_IP:8000/m1n1.bin
+mv m1n1.bin /tmp/
+```
+
+Or AirDrop `m1n1.bin` from M5 to M1.
+
+**Step B: Install m1n1 on M1**
+
+Reboot M1 into recovery mode (hold power → Options → Continue → password).
+Open Terminal from Utilities menu.
 
 ```sh
-# M1: boot into recovery (hold power button)
-# From another machine or USB serial:
-python3 proxyclient/main.py --hypervisor build/m1n1.macho
+# Install m1n1 as custom boot object (macOS >= 12.1)
+kmutil configure-boot -c /tmp/m1n1.bin --raw --entry-point 2048 --lowest-virtual-address 0 -v "Macintosh HD"
 
-# In proxy shell:
+# Enable backdoor proxy mode (both required)
+csrutil disable
+nvram boot-args=-v
+```
+
+Replace "Macintosh HD" with your volume name from `diskutil list`.
+
+Reboot: `shutdown -r now`
+
+**Step C: Connect proxy from M5**
+
+On M5 (have ready before M1 reboots):
+```sh
+cd /Users/gabesmall/workspace/asahi-m5-project
+source .venv/bin/activate
+pip install gnureadline
+cd m1n1
+ls /dev/cu.usbmodem*           # verify USB device appears
+export M1N1DEVICE=/dev/cu.usbmodemP_01
+python3 proxyclient/tools/shell.py
+```
+
+m1n1 boots on M1, waits 5 seconds for USB connection. If M5 connects, you
+get a Python shell. If M1 boots macOS instead, reboot M1 and try again.
+
+**Step D: Test hypervisor mode**
+
+In the M5 proxy shell:
+```python
+>>> from m1n1.hv import HV
+>>> hv = HV()
+>>> hv.init()
 >>> hv.boot_macos()
-# or:
->>> hv.start_guest(guest_type="macos")
 ```
 
 If macOS 13.5 boots under m1n1 on M1, the hypervisor is functional.
-If it doesn't, you have the wrong m1n1 version or macOS version — check Asahi
-docs for the supported guest version (currently 13.x development kernels).
+If it doesn't, check Asahi docs for the supported guest version.
 
-**Checkpoint C0:** m1n1 builds on M1, proxy works.
-**Checkpoint C1:** macOS 13.5 Finder appears under m1n1 on M1. LLDB attaches to
-guest vCPU. Both log streams (m1n1 trace + macOS verbose) are captured.
+**Checkpoint C0:** m1n1 builds on M5, proxy connects to M1.
+**Checkpoint C1:** macOS 13.5 Finder appears under m1n1 on M1.
 
 ---
 
