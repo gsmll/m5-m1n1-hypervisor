@@ -1,0 +1,43 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+*.egg
+dist/
+build/
+.eggs/
+*.so
+
+# Virtual environments
+.venv/
+venv/
+env/
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Build artifacts
+build/
+*.o
+*.elf
+*.bin
+*.macho
+*.dtb
+*.img
+
+# Logs
+*.log
+
+# m1n1 submodule (cloned separately)
+m1n1/
+
+# Environment
+.env
