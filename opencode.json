@@ -1,0 +1,76 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "model": "deepseek/deepseek-v4-pro",
+
+  "agent": {
+    "build": {
+      "description": "Primary agent for writing and modifying code",
+      "temperature": 0,
+      "model": "alibaba/qwen3-7-max"
+    },
+    "plan": {
+      "description": "Read-only analysis and architecture planning",
+      "temperature": 0,
+      "model": "alibaba/qwen3-7-max"
+    },
+    "slim": {
+      "description": "Lightweight agent for simple tasks, file exploration, grep, and quick lookups. Use for non-coding tasks to save tokens.",
+      "temperature": 0,
+      "mode": "subagent",
+      "model": "deepseek/deepseek-v4-flash",
+      "permission": {
+        "edit": "deny",
+        "bash": "deny",
+        "task": "deny"
+      }
+    },
+    "explore": {
+      "description": "Fast read-only agent for codebase exploration",
+      "model": "deepseek/deepseek-v4-flash",
+      "temperature": 0,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    },
+    "general": {
+      "description": "General-purpose agent for complex multi-step tasks",
+      "model": "alibaba/qwen3-7-max",
+      "temperature": 0
+    },
+    "scout": {
+      "description": "Research agent for documentation and external resources",
+      "model": "deepseek/deepseek-v4-flash",
+      "temperature": 0,
+      "permission": {
+        "edit": "deny",
+        "bash": "deny"
+      }
+    }
+  },
+
+  "permission": {
+    "edit": "allow",
+    "bash": "allow",
+    "read": "allow",
+    "external_directory": {
+      "/Users/gabesmall/.local/share/opencode/tool-output/*": "allow",
+      "/var/folders/y0/*/T/opencode/*": "allow",
+      "*": "deny"
+    }
+  },
+
+  "rules": {
+    "*.md": "allow",
+    "*.py": "allow",
+    "*.c": "allow",
+    "*.h": "allow",
+    "*.S": "allow",
+    "*.dts": "allow",
+    "*.dtsi": "allow",
+    "*.json": "allow",
+    "*.toml": "allow",
+    "Makefile": "allow",
+    "*.gitignore": "allow"
+  }
+}
