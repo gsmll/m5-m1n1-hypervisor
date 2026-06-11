@@ -1,0 +1,63 @@
+{
+  "$schema": "https://unpkg.com/oh-my-opencode-slim@latest/oh-my-opencode-slim.schema.json",
+  "preset": "custom",
+  "presets": {
+    "custom": {
+      "orchestrator": {
+        "model": "deepseek/deepseek-v4-pro",
+        "variant": "max",
+        "skills": ["*"],
+        "mcps": ["*", "!context7"]
+      },
+      "oracle": {
+        "model": "alibaba/qwen3-7-max",
+        "variant": "high",
+        "skills": ["simplify"],
+        "mcps": []
+      },
+      "plan": {
+        "model": "alibaba/qwen3-7-max",
+        "skills": ["*"],
+        "mcps": []
+      },
+      "build": {
+        "model": "deepseek/deepseek-v4-pro",
+        "variant": "max",
+        "skills": ["*"],
+        "mcps": []
+      },
+      "caller": {
+        "model": "minimax/minimax-m3",
+        "skills": [],
+        "mcps": []
+      },
+      "librarian": {
+        "model": "deepseek/deepseek-v4-flash",
+        "skills": [],
+        "mcps": ["websearch", "context7", "grep_app"]
+      },
+      "explorer": {
+        "model": "deepseek/deepseek-v4-flash",
+        "skills": [],
+        "mcps": []
+      },
+      "reviewer": {
+        "model": "minimax/minimax-m3",
+        "variant": "medium",
+        "skills": ["simplify"],
+        "mcps": []
+      },
+      "designer": {
+        "model": "google/gemini-3-5-flash",
+        "skills": [],
+        "mcps": []
+      },
+      "fixer": {
+        "model": "deepseek/deepseek-v4-flash",
+        "variant": "high",
+        "skills": [],
+        "mcps": []
+      }
+    }
+  }
+}
