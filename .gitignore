@@ -36,8 +36,9 @@ build/
 # Logs
 *.log
 
-# m1n1 submodule (cloned separately)
+# m1n1 (separate repo, cloned for development)
 m1n1/
 
 # Environment
 .env
+.venv
